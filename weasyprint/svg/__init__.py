@@ -601,6 +601,11 @@ class SVG:
         if node.tag in ('text', 'textPath', 'a') and not text:
             return
 
+        # Make sure there's an open path before we try to paint anything. Depending on the type of node,
+        # draw_node may not have started a path. If there's already a path open, this operation is harmless.
+        if not text:
+            self.stream.move_to(0, 0)
+
         # Get fill data
         fill_source, fill_color = self.get_paint(node.get('fill', 'black'))
         fill_opacity = float(node.get('fill-opacity', 1))
